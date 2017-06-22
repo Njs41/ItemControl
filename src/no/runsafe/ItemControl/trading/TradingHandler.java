@@ -120,41 +120,37 @@ public class TradingHandler implements IConfigurationChanged, IPlayerRightClickB
 		if (timerID == -1) // Only start a timer if we don't have one already.
 		{
 			ItemControl.Debugger.debugFine("Timer does not exist, starting new.");
-			timerID = scheduler.startAsyncRepeatingTask(new Runnable()
+			timerID = scheduler.startAsyncRepeatingTask(() ->
 			{
-				@Override
-				public void run()
+				boolean unsavedRemaining = false;
+				for (Map.Entry<String, List<TraderData>> node : data.entrySet())
 				{
-					boolean unsavedRemaining = false;
-					for (Map.Entry<String, List<TraderData>> node : data.entrySet())
+					for (TraderData data : node.getValue())
 					{
-						for (TraderData data : node.getValue())
+						if (!data.isSaved())
 						{
-							if (!data.isSaved())
+							ItemControl.Debugger.debugFine("Found unsaved node..");
+							if (data.getInventory().getViewers().isEmpty())
 							{
-								ItemControl.Debugger.debugFine("Found unsaved node..");
-								if (data.getInventory().getViewers().isEmpty())
-								{
-									ItemControl.Debugger.debugFine("No viewers in the node, saving and persisting in DB");
-									repository.updateTrader(data);
-									data.setSaved(true);
-									data.refresh();
-								}
-								else
-								{
-									ItemControl.Debugger.debugFine("Viewers found, skipping!");
-									unsavedRemaining = true;
-								}
+								ItemControl.Debugger.debugFine("No viewers in the node, saving and persisting in DB");
+								repository.updateTrader(data);
+								data.setSaved(true);
+								data.refresh();
+							}
+							else
+							{
+								ItemControl.Debugger.debugFine("Viewers found, skipping!");
+								unsavedRemaining = true;
 							}
 						}
 					}
+				}
 
-					if (!unsavedRemaining)
-					{
-						ItemControl.Debugger.debugFine("No unsaved remaining, cancelling timer!");
-						scheduler.cancelTask(timerID);
-						timerID = -1;
-					}
+				if (!unsavedRemaining)
+				{
+					ItemControl.Debugger.debugFine("No unsaved remaining, cancelling timer!");
+					scheduler.cancelTask(timerID);
+					timerID = -1;
 				}
 			}, 10, 10);
 		}

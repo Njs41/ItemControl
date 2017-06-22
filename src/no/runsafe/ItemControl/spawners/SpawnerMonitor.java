@@ -57,15 +57,10 @@ public class SpawnerMonitor implements IBlockBreakEvent, IMobSpawnerPulsed
 					);
 					return;
 				}
-				scheduler.createSyncTimer(
-					new Runnable()
+				scheduler.createSyncTimer(() ->
 					{
-						@Override
-						public void run()
-						{
-							if (!blockBreakEvent.isCancelled())
-								Item.Miscellaneous.MonsterEgg.Get(creature).Drop(theBlock.getLocation(), 1);
-						}
+						if (!blockBreakEvent.isCancelled())
+							Item.Miscellaneous.MonsterEgg.Get(creature).Drop(theBlock.getLocation(), 1);
 					},
 					10L
 				);
