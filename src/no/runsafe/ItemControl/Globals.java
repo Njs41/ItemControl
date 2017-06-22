@@ -30,6 +30,6 @@ public class Globals implements IConfigurationChanged
 	}
 
 
-	private final Map<String, List<Integer>> disabledItems = new HashMap<String, List<Integer>>();
+	private final Map<String, List<Integer>> disabledItems = new HashMap<>();
 	private boolean removeBlocked;
 }

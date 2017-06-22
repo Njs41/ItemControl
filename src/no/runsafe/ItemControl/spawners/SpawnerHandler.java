@@ -103,7 +103,7 @@ public class SpawnerHandler implements IConfigurationChanged
 		validSpawner = config.getConfigValueAsList("spawner.allow");
 	}
 
-	private List<String> spawnerWorlds = new ArrayList<String>(0);
-	private List<String> validSpawner = new ArrayList<String>(0);
+	private List<String> spawnerWorlds = new ArrayList<>(0);
+	private List<String> validSpawner = new ArrayList<>(0);
 	private final IConsole console;
 }

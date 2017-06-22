@@ -50,7 +50,7 @@ public class TradingHandler implements IConfigurationChanged, IPlayerRightClickB
 
 		String worldName = world.getName();
 		if (!data.containsKey(worldName))
-			data.put(worldName, new ArrayList<TraderData>(1));
+			data.put(worldName, new ArrayList<>(1));
 
 		data.get(worldName).add(node);
 	}
@@ -101,7 +101,7 @@ public class TradingHandler implements IConfigurationChanged, IPlayerRightClickB
 				if (!data.containsKey(worldName))
 				{
 					ItemControl.Debugger.debugFine("World does not have holder, creating new: " + worldName);
-					data.put(worldName, new ArrayList<TraderData>(1));
+					data.put(worldName, new ArrayList<>(1));
 				}
 
 				data.get(worldName).add(newData);
@@ -160,8 +160,8 @@ public class TradingHandler implements IConfigurationChanged, IPlayerRightClickB
 		}
 	}
 
-	private ConcurrentHashMap<String, List<TraderData>> data = new ConcurrentHashMap<String, List<TraderData>>(0);
-	private final List<UUID> creatingPlayers = new ArrayList<UUID>();
+	private ConcurrentHashMap<String, List<TraderData>> data = new ConcurrentHashMap<>(0);
+	private final List<UUID> creatingPlayers = new ArrayList<>();
 	private final TradingRepository repository;
 	private final IScheduler scheduler;
 	private final IServer server;
