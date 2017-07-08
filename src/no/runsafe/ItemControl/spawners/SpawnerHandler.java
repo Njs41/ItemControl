@@ -65,21 +65,20 @@ public class SpawnerHandler implements IConfigurationChanged
 			return false;
 		}
 
-		if (entityType == null || !validSpawner.contains(entityType.getName().toLowerCase()))
-		{
-			if (actor != null)
-				console.logInformation(
-						"SPAWNER WARNING: %s tried to create/break an invalid %s spawner [%s,%d,%d,%d]!",
-						actor.getPrettyName(),
-						entityType,
-						actor.getWorld().getName(),
-						actor.getLocation().getBlockX(),
-						actor.getLocation().getBlockY(),
-						actor.getLocation().getBlockZ()
-				);
-			return false;
-		}
-		return true;
+		if (entityType != null && validSpawner.contains(entityType.getName().toLowerCase()))
+			return true;
+
+		if (actor != null)
+			console.logInformation(
+				"SPAWNER WARNING: %s tried to create/break an invalid %s spawner [%s,%d,%d,%d]!",
+				actor.getPrettyName(),
+				entityType,
+				actor.getWorld().getName(),
+				actor.getLocation().getBlockX(),
+				actor.getLocation().getBlockY(),
+				actor.getLocation().getBlockZ()
+			);
+		return false;
 	}
 
 	private boolean setSpawnerEntityID(IBlock block, RunsafeEntityType entityType)

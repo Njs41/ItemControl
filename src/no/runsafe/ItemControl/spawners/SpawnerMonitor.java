@@ -39,37 +39,37 @@ public class SpawnerMonitor implements IBlockBreakEvent, IMobSpawnerPulsed
 		RunsafeItemStack heldItem = thePlayer.getItemInHand();
 		final IBlock theBlock = event.getBlock();
 
-		if (Enchant.SilkTouch.isOn(heldItem) && handler.spawnerIsHarvestable(thePlayer.getWorld()))
+		if (!Enchant.SilkTouch.isOn(heldItem) || !handler.spawnerIsHarvestable(thePlayer.getWorld()))
+			return;
+
+		try
 		{
-			try
+			ICreatureSpawner spawner = (ICreatureSpawner) theBlock;
+			final RunsafeEntityType creature = spawner.getCreature();
+			if (!handler.spawnerTypeValid(creature, thePlayer))
 			{
-				ICreatureSpawner spawner = (ICreatureSpawner) theBlock;
-				final RunsafeEntityType creature = spawner.getCreature();
-				if (!handler.spawnerTypeValid(creature, thePlayer))
-				{
-					console.outputToConsole(
-						String.format(
-							"%s tried harvesting an invalid %s spawner!",
-							thePlayer.getName(),
-							creature.getName()
-						),
-						Level.WARNING
-					);
-					return;
-				}
-				scheduler.createSyncTimer(() ->
-					{
-						if (!blockBreakEvent.isCancelled())
-							Item.Miscellaneous.MonsterEgg.Get(creature).Drop(theBlock.getLocation(), 1);
-					},
-					10L
+				console.outputToConsole(
+					String.format(
+						"%s tried harvesting an invalid %s spawner!",
+						thePlayer.getName(),
+						creature.getName()
+					),
+					Level.WARNING
 				);
-				blockBreakEvent.setXP(0);
+				return;
 			}
-			catch (Exception e)
-			{
-				console.logException(e);
-			}
+			scheduler.createSyncTimer(() ->
+				{
+					if (!blockBreakEvent.isCancelled())
+						Item.Miscellaneous.MonsterEgg.Get(creature).Drop(theBlock.getLocation(), 1);
+				},
+				10L
+			);
+			blockBreakEvent.setXP(0);
+		}
+		catch (Exception e)
+		{
+			console.logException(e);
 		}
 	}
 
